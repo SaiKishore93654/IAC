@@ -1,5 +1,0 @@
-key_name         = "sai.pem"
-private_key_path = "C:/Users/saiki/OneDrive/Desktop/Documents/saikishoreprojects/sai.pem"
-subnet_id        = "subnet-05186bc3023abbcfd"
-vpc_id           = "vpc-0bea81b119512af6a"
-my_ip            = "52.87.163.79/32"
