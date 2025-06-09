@@ -1,0 +1,27 @@
+- name: Setup NGINX with HTTPS (Certbot)
+  hosts: web
+  become: yes
+  tasks:
+    - name: Install NGINX and Certbot
+      yum:
+        name:
+          - nginx
+          - certbot
+          - python3-certbot-nginx
+        state: present
+
+    - name: Start and enable NGINX
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Obtain SSL certificate from Let's Encrypt
+      command: certbot --nginx -d your-domain.com --non-interactive --agree-tos -m your-email@example.com
+      args:
+        creates: /etc/letsencrypt/live/your-domain.com/fullchain.pem
+
+    - name: Reload NGINX to apply certbot changes
+      service:
+        name: nginx
+        state: reloaded
