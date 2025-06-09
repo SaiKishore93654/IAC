@@ -1,0 +1,46 @@
+- name: Install Prometheus
+  hosts: web
+  become: yes
+  tasks:
+    - name: Download Prometheus
+      get_url:
+        url: https://github.com/prometheus/prometheus/releases/download/v2.45.0/prometheus-2.45.0.linux-amd64.tar.gz
+        dest: /tmp/prometheus.tar.gz
+
+    - name: Extract Prometheus
+      unarchive:
+        src: /tmp/prometheus.tar.gz
+        dest: /opt/
+        remote_src: yes
+
+    - name: Start Prometheus service
+      systemd:
+        name: prometheus
+        state: started
+        enabled: yes
+      # You will need a systemd service file for Prometheus; create via template
+
+- name: Install Grafana
+  hosts: web
+  become: yes
+  tasks:
+    - name: Add Grafana repo
+      yum_repository:
+        name: grafana
+        description: Grafana Repository
+        baseurl: https://packages.grafana.com/oss/rpm
+        gpgcheck: yes
+        repo_gpgcheck: yes
+        gpgkey: https://packages.grafana.com/gpg.key
+        enabled: yes
+
+    - name: Install Grafana package
+      yum:
+        name: grafana
+        state: latest
+
+    - name: Start Grafana service
+      systemd:
+        name: grafana-server
+        state: started
+        enabled: yes
