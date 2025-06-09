@@ -24,8 +24,8 @@ pipeline {
         stage('Configure with Ansible') {
             dir('ansible') {
                 steps {
-                    sh 'ansible-playbook -i inventory.ini install-docker.yaml'
-                    sh 'ansible-playbook -i inventory.ini deploy-docker-app.yaml'
+                    sh 'ansible-playbook -i inventory.ini docker-install.yaml'
+                    sh 'ansible-playbook -i inventory.ini docker-deploy.yaml'
                 }
             }
         }
