@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    environment {
+        ANSIBLE_HOST_KEY_CHECKING = 'False'
+    }
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git 'https://github.com/SaiKishore93654/IAC.git'
+            }
+        }
+
+        stage('Provision with Terraform') {
+            dir('Terraform') {
+                steps {
+                    sh 'terraform init'
+                    sh 'terraform apply -auto-approve'
+                }
+            }
+        }
+
+        stage('Configure with Ansible') {
+            dir('ansible') {
+                steps {
+                    sh 'ansible-playbook -i inventory.ini install-docker.yaml'
+                    sh 'ansible-playbook -i inventory.ini deploy-docker-app.yaml'
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                sh 'curl http://$(terraform output -raw public_ip)'
+            }
+        }
+    }
+}
