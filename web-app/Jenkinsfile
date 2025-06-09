@@ -35,5 +35,21 @@ pipeline {
                 sh 'curl http://$(terraform output -raw public_ip)'
             }
         }
+        stage('Setup Monitoring') {
+    dir('ansible') {
+        steps {
+            sh 'ansible-playbook -i inventory.ini monitoring.yaml'
+        }
+    }
+}
+
+stage('Setup HTTPS') {
+    dir('ansible') {
+        steps {
+            sh 'ansible-playbook -i inventory.ini nginx-certbot.yaml'
+        }
+    }
+}
+
     }
 }
